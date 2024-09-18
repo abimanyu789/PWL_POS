@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserController extends Controller
 {
@@ -14,7 +15,7 @@ class UserController extends Controller
         // $data = [
         //     'nama' => 'Pelanggan Pertama',
         // ];
-        // Update data user dengan username 'customer-1'    
+        // Update data user dengan username 'customer-1'
         // UserModel::where('username', 'customer-1')->update($data);
         // Coba akses model UserModel
 
@@ -27,9 +28,10 @@ class UserController extends Controller
         // UserModel::create($data);
         // $user = UserModel::all(); // Ambil semua data dari tabel m_user
 
-        $user = UserModel::findOr(1,['username', 'nama'],function () {
-            abort(404);
-        });
+        // $user = UserModel::findOr(1,['username', 'nama'],function () {
+        //     abort(404);
+        // });
+        $user = UserModel::where('username','manager9')->firstOrFail();
         return view('user', ['data' => $user]);
     }
 }
