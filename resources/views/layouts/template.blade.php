@@ -17,7 +17,7 @@
 <div class="wrapper">
   <!-- Navbar -->
     @include('layouts.header')
-  <!-- /.navbar -->
+  <!-- /.navbar --> 
 
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
