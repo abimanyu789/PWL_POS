@@ -36,7 +36,7 @@ Route::put('/user/ubah_simpan/{id}', [UserController::class, 'ubah_simpan']);
 // DELETE
 Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
 
-// Jobsheet 5 //
+// Jobsheet 5 // & Jobsheet 6 Ajax //
 Route::get('/', [WelcomeController::class, 'index']);
 // table user
 Route::group(['prefix' => 'user'], function () {
@@ -51,6 +51,8 @@ Route::group(['prefix' => 'user'], function () {
     Route::put('/{id}', [UserController::class, 'update']);             // menyimpan perubahan data user
     Route::get('/{id}/edit_ajax', [UserController::class, 'edit_ajax']); // Menampilkan halaman form edit user Ajax
     Route::put('/{id}/update_ajax', [UserController::class, 'update_ajax']); // Menyimpan perubahan data user Ajax
+    Route::get('/{id}/delete_ajax', [UserController::class, 'confirm_ajax']); // Untuk tampilkan form confirm delete user Ajax
+    Route::delete('/{id}/delete_ajax', [UserController::class, 'delete_ajax']); // Untuk hapus data user Ajax
     Route::delete('/{id}', [UserController::class, 'destroy']);         // menghapus data user
 });
 // table level
