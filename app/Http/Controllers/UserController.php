@@ -312,39 +312,33 @@ class UserController extends Controller
     {
         $level = LevelModel::select('level_id', 'level_nama')->get();
         return view('user.create_ajax')
-            ->with('level', $level);
+        ->with('level',$level);
     }
     public function store_ajax(Request $request)
     {
-        // Cek apakah request berupa ajax atau ingin JSON
+        // cek apakah request berupa ajax
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
-                'level_id' => 'required|integer',
-                'username' => 'required|string|min:3|unique:m_user,username',
-                'nama' => 'required|string|max:100',
-                'password' => 'required|min:6'
+                'level_id'  => 'required|integer',
+                'username'  => 'required|string|min:3|unique:m_user,username',
+                'nama'      => 'required|string|max:100',
+                'password'  => 'required|min:6'
             ];
-
-            // Gunakan Validator dari Illuminate\Support\Facades\Validator;
+            // use Illuminate\Support\Facades\Validator;
             $validator = Validator::make($request->all(), $rules);
-            // Jika validasi gagal
             if ($validator->fails()) {
                 return response()->json([
                     'status' => false, // response status, false: error/gagal, true: berhasil
                     'message' => 'Validasi Gagal',
-                    'msgField' => $validator->errors(), // pesan error validasi
+                    'msgField' => $validator->errors() // pesan error validasi
                 ]);
             }
-            // Simpan data user
             UserModel::create($request->all());
-
-            // Jika berhasil
             return response()->json([
                 'status' => true,
-                'message' => 'Data user berhasil disimpan',
+                'message' => 'Data user berhasil disimpan'
             ]);
         }
-        // Redirect jika bukan request Ajax
         return redirect('/');
     }
     // Menampilkan halaman form edit user ajax
@@ -354,17 +348,16 @@ class UserController extends Controller
         $level = LevelModel::select('level_id', 'level_nama')->get();
         return view('user.edit_ajax', ['user' => $user, 'level' => $level]);
     }
-    public function update_ajax(Request $request, $id)
-    {
+    public function update_ajax(Request $request, $id){
         // cek apakah request dari ajax
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
                 'level_id' => 'required|integer',
-                'username' => 'required|max:20|unique:m_user,username,' . $id . ',user_id',
+                'username' => 'required|max:20|unique:m_user,username,'.$id.',user_id',
                 'nama' => 'required|max:100',
                 'password' => 'nullable|min:6|max:20'
             ];
-            // use Illuminate\Support\Facades\Validator;
+
             $validator = Validator::make($request->all(), $rules);
             if ($validator->fails()) {
                 return response()->json([
@@ -375,15 +368,15 @@ class UserController extends Controller
             }
             $check = UserModel::find($id);
             if ($check) {
-                if (!$request->filled('password')) { // jika password tidak diisi, maka hapus dari request
+                if(!$request->filled('password') ){ // jika password tidak diisi, maka hapus dari request
                     $request->request->remove('password');
                 }
                 $check->update($request->all());
                 return response()->json([
-                    'status' => true,
-                    'message' => 'Data berhasil diupdate'
+                'status' => true,
+                'message' => 'Data berhasil diupdate'
                 ]);
-            } else {
+            } else{
                 return response()->json([
                     'status' => false,
                     'message' => 'Data tidak ditemukan'
@@ -416,5 +409,10 @@ class UserController extends Controller
             }
         }
         return redirect('/');
+    }
+    public function show_ajax(string $id)
+    {
+        $user = UserModel::with('level')->find($id);
+        return view('user.show_ajax', ['user' => $user]);
     }
 }
