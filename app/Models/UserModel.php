@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable; // Implementasi class Aunthenticatable
 
-class UserModel extends Model
+class UserModel extends Authenticatable
 {
     use HasFactory;
 
@@ -28,5 +28,9 @@ class UserModel extends Model
     // cek apakah user memiliki role tertentu
     public function hasRole($role):bool {
         return $this->level->level_kode == $role;
+    }
+    // Mendapatkan kode role
+    public function getRole(){
+        return $this->level->level_kode;
     }
 }
