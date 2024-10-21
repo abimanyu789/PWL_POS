@@ -368,7 +368,11 @@ class UserController extends Controller
             }
             $check = UserModel::find($id);
             if ($check) {
-                if(!$request->filled('password') ){ // jika password tidak diisi, maka hapus dari request
+                if ($request->filled('password')) {
+                    // hash password jika diisi
+                    $request->merge(['password' => bcrypt($request->password)]);
+                } else {
+                    // jika password tidak diisi, hapus dari request
                     $request->request->remove('password');
                 }
                 $check->update($request->all());
