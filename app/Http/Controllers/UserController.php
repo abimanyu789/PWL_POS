@@ -10,73 +10,12 @@ use Yajra\DataTables\DataTables;
 use App\Models\LevelModel;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 
 class UserController extends Controller
 {
-
-    // public function index()    {
-    // Tambah data user dengan Eloquent Model
-    // $data = [
-    //     'nama' => 'Pelanggan Pertama',
-    // ];
-    // Update data user dengan username 'customer-1'
-    // UserModel::where('username', 'customer-1')->update($data);
-    // Coba akses model UserModel
-
-    // $data = [
-    //     'level_id' => 2,
-    //     'username' => 'manager_tiga',
-    //     'nama' => 'Manager 3',
-    //     'password' => Hash::make('12345')
-    // ];
-    // UserModel::create($data);
-    // $user = UserModel::all(); // Ambil semua data dari tabel m_user
-
-    // $user = UserModel::findOr(1,['username', 'nama'],function () {
-    //     abort(404);
-    // });
-    // $user = UserModel::where('level_id',2)->count();
-    // dd($user);
-
-    // $user = UserModel::firstOrNew(
-    //     [
-    //         'username' => 'manager11',
-    //         'nama' => 'Manager11',
-    //         'password' => Hash::make('12345'),
-    //         'level_id' => 2
-    //     ],
-    // );
-    // $user->username = 'manager12';
-
-    // $user->save();
-
-    // $user->wasChanged(); // true
-    // $user->wasChanged('username'); // true
-    // $user->wasChanged(['username', 'level_id']); // true
-    // $user->wasChanged('name'); // false
-    // dd($user->wasChanged(['nama', 'username'])); // true
-
-    // $user->isDirty(); // true
-    // $user->isDirty('username'); // true
-    // $user->isDirty('nama'); // false
-    // $user->isDirty(['nama', 'username']); // true
-
-    // $user->isClean(); // false
-    // $user->isClean('username'); // false
-    // $user->isClean('nama'); // true
-    // $user->isClean(['nama', 'username']); // false
-
-    // $user->save();
-
-    // $user->isDirty(); // false
-    // $user->isClean(); // true
-    // dd($user->isDirty());
-    // return view('user', ['data' => $user]);
-
-    // $user = UserModel::all();
-    // return view('user', ['data' => $user]);
-    // }
 
     // Jobsheet 4
     public function tambah()
@@ -418,5 +357,119 @@ class UserController extends Controller
     {
         $user = UserModel::with('level')->find($id);
         return view('user.show_ajax', ['user' => $user]);
+    }
+    public function import()
+    {
+        return view('user.import');
+    }
+    public function import_ajax(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                // validasi file harus xls atau xlsx, max 1MB
+                'file_user' => ['required', 'mimes:xlsx', 'max:1024']
+            ];
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi Gagal',
+                    'msgField' => $validator->errors()
+                ]);
+            }
+            $file = $request->file('file_user'); // ambil file dari request
+            $reader = IOFactory::createReader('Xlsx'); // load reader file excel
+            $reader->setReadDataOnly(true); // hanya membaca data
+            $spreadsheet = $reader->load($file->getRealPath()); // load file excel
+            $sheet = $spreadsheet->getActiveSheet(); // ambil sheet yang aktif
+            $data = $sheet->toArray(null, false, true, true); // ambil data excel
+            $insert = [];
+            if (count($data) > 1) { // jika data lebih dari 1 baris
+                foreach ($data as $baris => $value) {
+                    if ($baris > 1) { // baris ke 1 adalah header, maka lewati
+                        $password = !empty($value['D']) ? bcrypt($value['D']) : null; // hash password jika ada
+                        $insert[] = [
+                            'level_id' => $value['A'],
+                            'username' => $value['B'],
+                            'nama' => $value['C'],
+                            'password' => $password, // simpan password yang sudah dihash
+                            'created_at' => now(),
+                        ];
+                    }
+                }
+                if (count($insert) > 0) {
+                    // insert data ke database, jika data sudah ada, maka diabaikan
+                    UserModel::insertOrIgnore($insert);
+                }
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Data berhasil diimport'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Tidak ada data yang diimport'
+                ]);
+            }
+        }
+        return redirect('/');
+    }
+    public function export_excel()
+    {
+        // ambil data level yang akan di export
+        $user = UserModel::select('level_id', 'username', 'nama', 'password')
+            ->orderBy('level_id')
+            ->with('level')
+            ->get();
+        // load library excel
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();    // ambil sheet yang aktif
+        $sheet->setCellValue('A1', 'No');
+        $sheet->setCellValue('B1', 'Username');
+        $sheet->setCellValue('C1', 'Nama');
+        $sheet->setCellValue('D1', 'Password');
+        $sheet->setCellValue('E1', 'Level');
+        $sheet->getStyle('A1:E1')->getFont()->setBold(true);    // bold header
+        $no = 1;        // nomor data dimulai dari 1
+        $baris = 2;     // baris data dimulai dari baris ke 2
+        foreach ($user as $key => $value) {
+            $sheet->setCellValue('A' . $baris, $no);
+            $sheet->setCellValue('B' . $baris, $value->username);
+            $sheet->setCellValue('C' . $baris, $value->nama);
+            $sheet->setCellValue('D' . $baris, $value->password);
+            $sheet->setCellValue('E' . $baris, $value->level->level_nama);
+            $baris++;
+            $no++;
+        }
+        foreach (range('A', 'E') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);   // set auto size untuk kolom
+        }
+        $sheet->setTitle('Data User'); // set title sheet
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $filename = 'Data User ' . date('Y-m-d H:i:s') . '.xlsx';
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        header('Cache-Control: max-age=1');
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Cache-Control: cache, must-revalidate');
+        header('Pragma: public');
+        $writer->save('php://output');
+        exit;
+    }
+    public function export_pdf()
+    {
+        $user = UserModel::select('level_id', 'username', 'nama', 'password')
+            ->orderBy('level_id')
+            ->orderBy('username')
+            ->with('level')
+            ->get();
+        // use Barryvdh\DomPDF\Facade\Pdf;
+        $pdf = Pdf::loadView('user.export_pdf', ['user' => $user]);
+        $pdf->setPaper('a4', 'portrait'); // Set ukuran kertas dan orientasi
+        $pdf->setOption('isRemoteEnabled', true); // Set true jika ada gambar dari URL
+        $pdf->render();
+        return $pdf->stream('Data User ' . date('Y-m-d H:i:s') . '.pdf');
     }
 }
