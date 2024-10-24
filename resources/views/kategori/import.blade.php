@@ -9,9 +9,9 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label>Download Template</label>
+                    <label> Download Template</label>
                     <a href="{{ asset('template_kategori.xlsx') }}" class="btn btn-info btnsm" download><i
-                            class="fa fa-file-excel"></i>Download</a>
+                            class="fa fa-file-excel"></i> Download</a>
                     <small id="error-kategori_id" class="error-text form-text textdanger"></small>
                 </div>
                 <div class="form-group">

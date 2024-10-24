@@ -17,22 +17,7 @@
             @if (session('error'))
                 <div class="alert alert-danger">{{ session('error') }}</div>
             @endif
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group row">
-                        <label class="col-1 control-label col-form-label">Filter: </label>
-                        <div class="col-3">
-                            <select class="form-control" id="supplier_id" name="supplier_id" required>
-                                <option value="">- Semua </option>
-                                @foreach ($supplier as $item)
-                                    <option value="{{ $item->supplier_id }}">{{ $item->supplier_nama }}</option>
-                                @endforeach
-                            </select>
-                            <small class="form-text text-muted">Supplier Barang</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
             <table class="table table-bordered table-striped table-hover table-sm" id="table_supplier">
                 <thead>
                     <tr>

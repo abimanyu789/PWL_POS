@@ -20,8 +20,8 @@
                             <div class="col-md-3">
                                 <select name="filter_kategori" class="form-control form-control-sm filter_kategori">
                                     <option value="">- Semua -</option>
-                                    @foreach ($kategori as $l)
-                                        <option value="{{ $l->kategori_id }}">{{ $l->kategori_nama }}</option>
+                                    @foreach ($kategori as $k)
+                                        <option value="{{ $k->kategori_id }}">{{ $k->kategori_nama }}</option>
                                     @endforeach
                                 </select>
                                 <small class="form-text text-muted">Kategori Barang</small>

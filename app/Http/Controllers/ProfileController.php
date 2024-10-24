@@ -11,13 +11,13 @@ class ProfileController extends Controller
     {
         $user = UserModel::findOrFail(Auth::id());
         $breadcrumb = (object) [
-            'title' => 'Data Profil',
+            'title' => 'Data Profile',
             'list' => [
                 ['name' => 'Home', 'url' => url('/')],
-                ['name' => 'profil', 'url' => url('/profil')]
+                ['name' => 'profile', 'url' => url('/profile')]
             ]
         ];
-        $activeMenu = 'profil';
+        $activeMenu = 'profile';
         return view('profile', compact('user'),[
             'breadcrumb' => $breadcrumb,
             'activeMenu' => $activeMenu

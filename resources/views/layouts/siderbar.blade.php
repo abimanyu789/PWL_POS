@@ -1,4 +1,24 @@
+@php
+    $user = auth()->user() ?? null;
+@endphp
 <div class="sidebar">
+    <!-- Sidebar user -->
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+            @if ($user->profile_image)
+                <img src="{{ asset('storage/photos/' . $user->profile_image) }}"
+                    class="img-fluid rounded-circle shadow-lg"
+                    style="width: 60px; height: 60px; object-fit: cover; border: 3px solid #f8f9fa;">
+            @else
+                <img src="{{ asset('polinema-bw.png') }}" class="img-fluid rounded-circle shadow-lg"
+                    style="width: 60px; height: 60px; object-fit: cover; border: 3px solid #f8f9fa;">
+            @endif
+        </div>
+        <div class="info">
+            <label for="nama" class="form-label text-white">{{ old('nama', $user->nama) }}</label>
+            <a href="{{ url('/profile') }}" class="d-block">Lihat Profil</a>
+        </div>
+    </div>
     <!-- SidebarSearch Form -->
     <div class="form-inline mt-2">
         <div class="input-group" data-widget="sidebar-search">
@@ -59,7 +79,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ url('/barang') }}" class="nav-link {{ $activeMenu == 'penjualan' ? 'active' : '' }} ">
+                <a href="{{ url('/penjualan') }}" class="nav-link {{ $activeMenu == 'penjualan' ? 'active' : '' }} ">
                     <i class="nav-icon fas fa-cash-register"></i>
                     <p>Transaksi Penjualan</p>
                 </a>
