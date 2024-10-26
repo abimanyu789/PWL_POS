@@ -101,8 +101,8 @@
                                     </div>
                                     <div class="form-group mb-0 text-end">
                                         <button type="submit" class="btn btn-primary shadow-sm px-4"
-                                            style="background-color: #26a933; border: none; transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;"
-                                            onmouseover="this.style.backgroundColor='#0056b3'; this.style.boxShadow='0px 4px 15px rgba(0, 123, 255, 0.5)';"
+                                            style="background-color: #007bff; border: none; transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;"
+                                            onmouseover="this.style.backgroundColor='#26a933'; this.style.boxShadow='0px 4px 15px rgba(0, 123, 255, 0.5)';"
                                             onmouseout="this.style.backgroundColor='#007bff'; this.style.boxShadow='none';">
                                             <i class="fas fa-save"></i> {{ __('Update Profil') }}
                                         </button>

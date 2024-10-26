@@ -36,7 +36,17 @@ class StokController extends Controller
         if (!empty($supplier_id)) {
             $stok->where('supplier_id', $supplier_id);
         }
-        
+        // Filter data stok berdasarkan barang_id
+        $barang_id = $request->input('filter_barang');
+        if (!empty($barang_id)) {
+            $stok->where('barang_id', $barang_id);
+        }
+        // Filter data stok berdasarkan user_id
+        $user_id = $request->input('filter_user');
+        if (!empty($user_id)) {
+            $stok->where('user_id', $user_id);
+        }
+
         return DataTables::of($stok)->addIndexColumn() // menambahkan kolom index / no urut (default nama kolom:DT_RowIndex)
             ->addColumn('aksi', function ($stok) { // menambahkan kolom aksi
                 $btn = '<button onclick="modalAction(\'' . url('/stok/' . $stok->stok_id .

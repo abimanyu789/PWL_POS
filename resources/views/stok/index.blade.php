@@ -32,6 +32,24 @@
                                 </select>
                                 <small class="form-text text-muted">Nama Supplier</small>
                             </div>
+                            <div class="col-md-3">
+                                <select name="filter_user" class="form-control form-control-sm filter_user">
+                                    <option value="">- Semua -</option>
+                                    @foreach ($user as $u)
+                                        <option value="{{ $u->user_id }}">{{ $u->nama }}</option>
+                                    @endforeach
+                                </select>
+                                <small class="form-text text-muted">Nama User</small>
+                            </div>
+                            <div class="col-md-3">
+                                <select name="filter_barang" class="form-control form-control-sm filter_barang">
+                                    <option value="">- Semua -</option>
+                                    @foreach ($barang as $b)
+                                        <option value="{{ $b->barang_id }}">{{ $b->barang_nama }}</option>
+                                    @endforeach
+                                </select>
+                                <small class="form-text text-muted">Nama Barang</small>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -76,6 +94,10 @@
                     "type": "POST",
                     "data": function(d) {
                         d.filter_supplier = $('.filter_supplier').val();
+                        d.filter_barang = $('.filter_barang').val();
+                        d.filter_user = $('.filter_user').val();
+
+
                     }
                 },
                 columns: [{
@@ -129,9 +151,10 @@
                 }
             });
 
-            $('.filter_supplier').change(function() {
+            $('.filter_supplier, .filter_barang, .filter_user').change(function() {
                 dataStok.draw();
             });
+
         });
     </script>
 @endpush

@@ -111,15 +111,50 @@
         <tbody>
             @php
                 $counter = 1;
+                $prev_tanggal = '';
+                $prev_user = '';
+                $prev_pembeli = '';
+                $prev_kode = '';
+                $current_kode = null;
             @endphp
             @foreach ($penjualan as $penj)
+                @php
+                    // Reset previous values if we're starting a new transaction
+                    if ($current_kode !== $penj->penjualan_kode) {
+                        $prev_tanggal = '';
+                        $prev_user = '';
+                        $prev_pembeli = '';
+                        $prev_kode = '';
+                        $current_kode = $penj->penjualan_kode;
+                    }
+                @endphp
                 @foreach ($penj->penjualan_detail as $detail)
                     <tr>
                         <td class="text-center">{{ $counter++ }}</td> <!-- Counter manual -->
-                        <td>{{ $penj->penjualan_tanggal }}</td>
-                        <td>{{ $penj->user->nama }}</td>
-                        <td>{{ $penj->pembeli }}</td>
-                        <td>{{ $penj->penjualan_kode }}</td>
+                        <td>
+                            @if ($prev_tanggal != $penj->penjualan_tanggal)
+                                {{ $penj->penjualan_tanggal }}
+                                @php $prev_tanggal = $penj->penjualan_tanggal @endphp
+                            @endif
+                        </td>
+                        <td>
+                            @if ($prev_user != $penj->user->nama)
+                                {{ $penj->user->nama }}
+                                @php $prev_user = $penj->user->nama @endphp
+                            @endif
+                        </td>
+                        <td>
+                            @if ($prev_pembeli != $penj->pembeli)
+                                {{ $penj->pembeli }}
+                                @php $prev_pembeli = $penj->pembeli @endphp
+                            @endif
+                        </td>
+                        <td>
+                            @if ($prev_kode != $penj->penjualan_kode)
+                                {{ $penj->penjualan_kode }}
+                                @php $prev_kode = $penj->penjualan_kode @endphp
+                            @endif
+                        </td>
                         <td>{{ $detail->barang_id }}</td>
                         <td>{{ $detail->barang->barang_nama }}</td>
                         <td>{{ $detail->jumlah }}</td>
