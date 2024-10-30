@@ -24,7 +24,7 @@ class UserModel extends Authenticatable implements JWTSubject
     protected $primaryKey = 'user_id'; // Mendefinisikan primary key dari tabel yang digunakan
     protected $fillable = ['username', 'password', 'nama', 'level_id', 'profile_image', 'created_at', 'updated_at'];
 
-    protected $hidden = ['password']; // jangan di tampilkan saat select
+    // protected $hidden = ['password']; // jangan di tampilkan saat select
     protected $cast = ['password' => 'hashed']; // casting password agar otomatis di hash
 
     // relasi ke table level

@@ -41,7 +41,7 @@ return [
             'provider' => 'users',
         ],
         'api' => [
-            'driver' => 'jut',
+            'driver' => 'jwt',
             'provider' => 'users'
         ],
     ],
