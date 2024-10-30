@@ -15,17 +15,17 @@ class UserController extends Controller
     }
     public function store(Request $request)
     {
-        $User = UserModel::create($request->all());
-        return response()->json($User, 201);
+        $user = UserModel::create($request->all());
+        return response()->json($user, 201);
     }
-    public function show(UserModel $User)
+    public function show(UserModel $user)
     {
-        return UserModel::find($User);
+        return UserModel::find($user);
     }
-    public function update(Request $request, UserModel $User)
+    public function update(Request $request, UserModel $user)
     {
-        $User->update($request->all());
-        return UserModel::find($User);
+        $user->update($request->all());
+        return UserModel::find($user);
     }
     public function destroy(UserModel $user)
     {
