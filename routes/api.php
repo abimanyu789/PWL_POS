@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\BarangController;
 
 Route::pattern('id', '[0-9]+'); // arti: ketika ada parameter {id}, maka harus berupa angka
 Route::post('/register', App\Http\Controllers\Api\RegisterController::class)->name('register');
+Route::post('/register1', App\Http\Controllers\Api\RegisterController::class)->name('register1');
 Route::post('/login', App\Http\Controllers\Api\LoginController::class)->name('name');
 Route::middleware('auth:api')->get('/user', function(Request $request){
     return $request->user();

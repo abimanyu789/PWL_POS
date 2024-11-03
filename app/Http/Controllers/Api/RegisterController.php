@@ -16,18 +16,25 @@ class RegisterController extends Controller
             'username' => 'required',
             'nama' => 'required',
             'password' => 'required|min:5|confirmed',
-            'level_id' => 'required'
+            'level_id' => 'required',
+            'image' => 'required|image|mimes:jpeg,jpg,png,gif,svg|max:2048',
         ]);
         //if validations fails
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
-        //create user
+        // store image and get hashed name
+        $image = $request->file('image');
+        $image->store('images', 'public'); // store the image in 'public/images'
+        $imageName = $image->hashName(); // get the hashed filename
+
+        // create user
         $user = UserModel::create([
             'username' => $request->username,
             'nama' => $request->nama,
             'password' => bcrypt($request->password),
             'level_id' => $request->level_id,
+            'image' => $imageName, // save the hashed filename
         ]);
         //return response JSON user is created
         if ($user) {

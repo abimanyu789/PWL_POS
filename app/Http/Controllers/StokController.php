@@ -28,7 +28,8 @@ class StokController extends Controller
     }
     public function list(Request $request)
     {
-        $stok = StokModel::select('stok_id', 'supplier_id', 'barang_id', 'user_id', 'stok_tanggal', 'stok_jumlah')
+        $stok = StokModel::select('stok_id', 'supplier_id', 'barang_id',
+        'user_id', 'stok_tanggal', 'stok_jumlah')
             ->with('supplier', 'barang', 'user');
 
         // Filter data stok berdasarkan supplier_id
