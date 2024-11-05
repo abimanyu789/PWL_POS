@@ -200,7 +200,7 @@ class BarangController extends Controller
             BarangModel::destroy($id);
             // Jika berhasil, kembalikan pesan sukses
             return redirect('/barang')->with('success', 'Data barang berhasil dihapus');
-        } catch (Illuminate\Database\QueryException $e) {
+        } catch (\Illuminate\Database\QueryException $e) {
             // Jika terjadi error ketika menghapus data (misalnya ada data terkait di tabel lain)
             return redirect('/barang')->with('error', 'Data barang gagal dihapus karena masih terdapat tabel lain yang terkait dengan data ini');
         }

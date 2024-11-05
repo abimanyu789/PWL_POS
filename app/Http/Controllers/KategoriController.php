@@ -179,7 +179,7 @@ class KategoriController extends Controller
             KategoriModel::destroy($id);
             // Jika berhasil, kembalikan pesan sukses
             return redirect('/kategori')->with('success', 'Data kategori berhasil dihapus');
-        } catch (Illuminate\Database\QueryException $e) {
+        } catch (\Illuminate\Database\QueryException $e) {
             // Jika terjadi error ketika menghapus data (misalnya ada data terkait di tabel lain)
             return redirect('/kategori')->with('error', 'Data kategori gagal dihapus karena masih terdapat tabel lain yang terkait dengan data ini');
         }

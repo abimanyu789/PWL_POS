@@ -185,7 +185,7 @@ class SupplierController extends Controller
             SupplierModel::destroy($id);
             // Jika berhasil, kembalikan pesan sukses
             return redirect('/supplier')->with('success', 'Data supplier berhasil dihapus');
-        } catch (Illuminate\Database\QueryException $e) {
+        } catch (\Illuminate\Database\QueryException $e) {
             // Jika terjadi error ketika menghapus data (misalnya ada data terkait di tabel lain)
             return redirect('/supplier')->with('error', 'Data supplier gagal dihapus karena masih terdapat tabel lain yang terkait dengan data ini');
         }
