@@ -16,6 +16,7 @@ class KategoriController extends Controller
     public function store(Request $request)
     {
         $kategori = KategoriModel::create($request->all());
+        // revisi unique di kode kategori
         return response()->json($kategori, 201);
     }
     public function show(KategoriModel $kategori)

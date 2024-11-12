@@ -1,8 +1,11 @@
 <?php
+
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 class StokModel extends Model
 {
     use HasFactory;
@@ -13,7 +16,9 @@ class StokModel extends Model
         'barang_id',
         'user_id',
         'stok_tanggal',
-        'stok_jumlah'
+        'stok_jumlah',
+        'created_at',
+        'updated_at'
     ];
     // Relasi dengan model Supplier
     public function supplier(): BelongsTo
